@@ -133,3 +133,30 @@ Each resource's unit load is the sum of the times of all activities it is requir
 - Process capacity = min(7.50, 10.00, 15.00) = 7.50 units/hr, with R1 as the bottleneck
 - Throughput rate = min{capacity rate, input rate} = min{7.50, 2} = 2 units/hr
 - Utilization of R2 = throughput rate ÷ capacity rate of R2 = 2 ÷ 10 = **20.00%**
+
+---
+
+## Lecture sources
+
+PDF page numbers. L3 pages are from the solution version, with the non-solution version in brackets.
+
+| Q | Concept used | Source |
+|---|---|---|
+| 1 | Definition of the (theoretical) flow time of a process | L2 p.19 |
+| 1 | Flow time = sum of activity times along the path (McDonald's, 36 sec) | L2 p.20 |
+| 1 | Pooled parallel activity counted only once ("do not double count A") | In-class exercise p.3 |
+| 2a, 2b | Little's Law, I = R × T | L3 p.37 (p.27) |
+| 2a, 2b | Solving for I, R or T (BBA students) | L3 p.32–36 (p.22–26) |
+| 2b | Inventory in the process = buffer + activities | L3 p.15 (p.6) |
+| 3 | Inventory buildup rate = slope of the graph | L3 p.26 (p.17) |
+| 3 | Average inventory = area under the curve ÷ length of time | L3 p.25 (p.16) |
+| 3 | Splitting the area into triangles and rectangles (A + B + C) | L3 p.28–29 (p.19) |
+| 4a | Capacity rate of a resource | L2 p.25 |
+| 4a | Bottleneck = resource with the lowest capacity rate | L2 p.29 |
+| 4a, 5a | Unit load = total time a resource spends on one unit (Worker 3: 6 + 2 + 2) | L2 p.38 |
+| 4b | Resource pooling: pool capacity = number of resources × capacity of one | L2 p.31–35, in-class exercise p.2 |
+| 4b | Fixing one bottleneck can create another | L2 p.34–35, p.40 |
+| 4c | Process capacity = minimum capacity over all resources; relieve a bottleneck by reducing its unit load | L2 p.28–29, p.40; L3 p.5, p.13 |
+| 5a | Unit load = 1 / capacity rate, filling in the table | L2 p.39–40 |
+| 5b | Throughput rate = min{capacity rate, input rate} | L2 p.46 |
+| 5b | Utilization = throughput rate ÷ resource capacity rate | L2 p.47–49, in-class exercise p.4 |
