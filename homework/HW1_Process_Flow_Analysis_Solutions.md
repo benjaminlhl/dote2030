@@ -6,17 +6,20 @@
 
 ## Question 1 — Flow time of the process [1 pt]
 
-The flow time of a process is the shortest time for one flow unit to get through the whole process (Lecture 2). When activities run **simultaneously** (in parallel), the unit can't move on until the **longest** parallel branch is done. So:
+The (theoretical) flow time of a process is the shortest amount of time needed for one flow unit to complete the process (Lecture 2). In the McDonald's example, all activities were on one path, so the flow time was just the sum of the activity times.
 
-- A → (B ∥ C) → D → (E ∥ F) → G
+Here B and C are performed **simultaneously**, and so are E and F. A flow unit can only start D once **both** B and C are finished, and can only start G once **both** E and F are finished. So we add up the times along each path from START to END:
 
-| Stage | Time |
+| Path | Time |
 |---|---|
-| Activity A | 5 min |
-| B ∥ C = max(3, 5) | 5 min |
-| Activity D | 2 min |
-| E ∥ F = max(5, 7) | 7 min |
-| Activity G | 3 min |
+| A → B → D → E → G | 5 + 3 + 2 + 5 + 3 = 18 min |
+| A → B → D → F → G | 5 + 3 + 2 + 7 + 3 = 20 min |
+| A → C → D → E → G | 5 + 5 + 2 + 5 + 3 = 20 min |
+| A → C → D → F → G | 5 + 5 + 2 + 7 + 3 = **22 min** |
+
+The unit is not done until every activity on every path is finished, so the flow time is set by the **longest path**: A → C → D → F → G.
+
+(The parallel activities also don't compete for the same resource: B uses R1, R3 while C uses R2, and E uses R2, R3 while F uses R4. So they really can run at the same time.)
 
 **Flow time = 5 + 5 + 2 + 7 + 3 = 22.00 min**
 
