@@ -63,7 +63,7 @@ People
 |---|---|---|
 | 12–2 p.m. | Triangle: ½ × 2 hr × 40 | 40 people·hr |
 | 2–4 p.m. | Rectangle: 2 hr × 40 | 80 people·hr |
-| 4–5 p.m. | Trapezoid: ½ × (40 + 20) × 1 hr | 30 people·hr |
+| 4–5 p.m. | Rectangle 1 hr × 20 + triangle ½ × 1 hr × 20 (= trapezoid ½ × (40 + 20) × 1) | 20 + 10 = 30 people·hr |
 | **Total** | | **150 people·hr** |
 
 Average inventory = area ÷ length of the time period = 150 people·hr ÷ 5 hr = **30.00 people**
