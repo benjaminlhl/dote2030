@@ -27,18 +27,68 @@ The unit is not done until every activity on every path is finished, so the flow
 
 ## Question 2 — Open-pit mining (Little's Law: I = R × T) [6 pts]
 
-### (a) [3 pts]
-- Flow time T = 10 min = 10/60 hr = 1/6 hr
-- Throughput rate R = 12 rocks/hr
+**Process:** rocks arrive → **buffer** (waiting) → **crushing activity** → crushed rock leaves.
+The "entire crushing process" includes both the buffer and the activity.
 
-I = R × T = 12 rocks/hr × (1/6) hr = **2.00 rocks**
+**Tool: Little's Law (L3 p.37)**
+
+> Average inventory (I) = Average throughput rate (R) × Average flow time (T)
+
+- I = average number of rocks in the process [rocks]
+- R = average rate at which crushed rocks leave the process [rocks per unit time]
+- T = average time a rock spends in the process [time]
+
+The question says the process is stable, so Little's Law applies.
+
+### (a) [3 pts]
+
+**Step 1: List what is given.**
+- Average flow time: T = 10 min
+- Average throughput rate: R = 12 rocks/hr
+- Unknown: average inventory I (rocks in the process)
+
+**Step 2: Put R and T in the same time unit.** R is per hour and T is in minutes, so convert T to hours:
+
+T = 10 min × (1 hr / 60 min) = 1/6 hr ≈ 0.1667 hr
+
+**Step 3: Apply Little's Law.**
+
+I = R × T = 12 rocks/hr × 1/6 hr = 12/6 rocks = 2 rocks
+
+**Step 4: Check the units.** (rocks/hr) × hr = rocks ✓
+
+*(Cross-check in minutes: R = 12 rocks/hr ÷ 60 min/hr = 0.2 rocks/min, so I = 0.2 × 10 = 2 rocks ✓)*
+
+**Answer: I = 2.00 rocks**
 
 ### (b) [3 pts]
-- The inventory in the process counts flow units in the buffer **and** in the activity (Lecture 3):
-  I = 4 + 1 = 5 rocks
-- Flow time T = 20 min
 
-R = I / T = 5 rocks / 20 min = **0.25 rocks/min**
+**Step 1: List what is given.**
+- Average flow time: T = 20 min (for the **entire** process, buffer + crushing)
+- Average rocks in the buffer: 4 rocks
+- Average rocks being crushed (in the activity): 1 rock
+- Unknown: average throughput rate R, in rocks per minute
+
+**Step 2: Find the average inventory of the whole process.**
+"Inventory in the process counts all flow units in the process (this includes all buffers and activities)" (L3 p.15).
+
+T covers the entire process, so I must cover the same whole process:
+
+I = inventory in buffer + inventory in activity = 4 + 1 = 5 rocks
+
+**Step 3: Rearrange Little's Law to solve for R.**
+
+I = R × T  ⟹  R = I ÷ T
+
+**Step 4: Substitute.** T is already in minutes, which matches the unit asked for:
+
+R = 5 rocks ÷ 20 min = 0.25 rocks/min
+
+**Step 5: Check the units.** rocks ÷ min = rocks/min ✓
+
+**Answer: R = 0.25 rocks/min**
+
+*Common mistake: using only the buffer (4 ÷ 20 = 0.20) or only the activity (1 ÷ 20 = 0.05). I, R and T must describe the same part of the process.*
 
 ---
 
