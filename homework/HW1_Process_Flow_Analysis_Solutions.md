@@ -56,6 +56,8 @@ People
     12    1    2    3    4    5   (p.m.)
 ```
 
+![Q3 continuous inventory build-up diagram](q3_inventory_buildup.png)
+
 **Area under the curve:**
 | Period | Shape | Area |
 |---|---|---|
