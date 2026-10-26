@@ -88,6 +88,36 @@ function IMG(name, hIn) {
       altText: { title: name, description: name, name } })],
   });
 }
+
+const EQDIR = process.env.EQDIR;
+const EQSIZE = JSON.parse(fs.readFileSync(`${EQDIR}/eq_sizes.json`, "utf8"));
+function FE(items) {
+  const maxW = COL_W / 1440 - 0.12;
+  return items.map((it, i) => {
+    let children;
+    if (typeof it === "string") children = runs(it, { bold: true });
+    else {
+      const [key, note] = it;
+      let [w, h] = EQSIZE[key];
+      if (w > maxW) { h *= maxW / w; w = maxW; }
+      children = [new ImageRun({ type: "png", data: fs.readFileSync(`${EQDIR}/eq_${key}.png`),
+        transformation: { width: Math.round(w * 96), height: Math.round(h * 96) },
+        altText: { title: key, description: key, name: key } })];
+      if (note) {
+        const fits = w + 0.034 * (note.length + 2) <= maxW;
+        if (!fits) children.push(new TextRun({ break: 1, text: "", size: SZ }));
+        children.push(...runs((fits ? "  " : "") + note, { color: "444444" }));
+      }
+    }
+    return new Paragraph({
+      children,
+      shading: { type: ShadingType.CLEAR, color: "auto", fill: TINT },
+      border: { left: { style: BorderStyle.SINGLE, size: 12, color: ACCENT, space: 2 } },
+      spacing: { before: i === 0 ? 10 : 0, after: i === items.length - 1 ? 16 : 2, line: 124, lineRule: LineRuleType.AT_LEAST },
+      indent: { left: 60 },
+    });
+  });
+}
 const c = [];
 const title = new Paragraph({
   children: [
@@ -132,11 +162,10 @@ c.push(B("**Flow chart** = boxes and arrows (what happens, in what order). **Gan
 c.push(B("There is no single correct map. Map the process the way it **actually** works and check it with the people who do it."));
 
 c.push(H("2 · Flow time (L2 p.19–21)"));
-c.push(...F([
-  "Flow time of an activity = the shortest time one unit needs to finish that activity",
-  "Flow time of the process = the shortest time one unit needs to go START → END",
-  "• all activities in one line: ADD all the activity times",
-  "• some activities done at the same time (parallel): take the LONGEST path",
+c.push(...FE([
+  "Flow time = the SHORTEST time one unit needs (one activity, or START → END)",
+  ["flow1"],
+  ["flow2", "longest route"],
 ]));
 c.push(IMG("fig_paths", 2.5 * 372 / 1500));
 c.push(B("This is the **theoretical** (perfect-world) flow time: no waiting, no breakdowns. A real unit can take **longer** because it may wait in buffers."));
@@ -151,12 +180,12 @@ c.push(...X([
 c.push(...W(["**Trap**: \"Flow time is 10 min, so every unit takes 10 min\" is FALSE. Flow time is the minimum possible time."]));
 
 c.push(H("3 · Unit load, capacity rate, bottleneck (L2)"));
-c.push(...F([
-  "Unit load of a resource = SUM of the times of ALL activities that resource is needed for (min per unit)",
-  "Capacity rate of a resource = 60 ÷ unit load (units/hr)   [or 3600 ÷ unit load in seconds]",
-  "Capacity rate of a pool of n identical resources = n × capacity of one",
-  "Process capacity rate = the SMALLEST capacity rate among all resources and pools",
-  "Bottleneck = the resource (or pool) with that smallest capacity rate",
+c.push(...FE([
+  ["unitload", "(min per unit)"],
+  ["caprate"],
+  ["pool"],
+  ["proc", "= the bottleneck's capacity"],
+  "Bottleneck = the resource (or pool) with the smallest capacity",
 ]));
 c.push(H3("How to find the bottleneck (5 steps)"));
 c.push(B("**Step 1**: list EVERY resource: every worker, machine, tool, oven, crane. (Activities are NOT resources.)"));
@@ -185,16 +214,16 @@ c.push(B("Fixing one bottleneck can create a **new** bottleneck. Cut a bottlenec
 c.push(...X([
   "**Review SA2**: Worker does A 10 + C 15 = 25 min (2.4/hr); Machine B 12 min (5/hr); Machine C 15 min (4/hr); 2 sales reps, 20 min each (pool 2 × 3 = 6/hr).",
   "Bottleneck = Worker (2.4/hr). Useful cut = until Worker equals Machine C's 15 min ⇒ **10 min**. (Not 5 min: the reps are a pool of 6/hr, not 3/hr.)",
-  "**Pizza (Overcooked, L3)**: oven unit load = load 1 + bake 10 + unload 1 = 12 s ⇒ oven capacity 60/12 = **5 pizzas/min**. No way of dividing work between chefs can beat 5.",
+  "**Pizza (Overcooked, L3)**: 2 chefs, 1 oven, 22 s of chef work per pizza. Oven unit load = load 1 + bake 10 + unload 1 = 12 s ⇒ oven capacity 60/12 = **5 pizzas/min**. No way of dividing work between the chefs can beat 5.",
   "Chef A 14 s, Chef B 8 s ⇒ 60/14 = 4.29/min (Chef A is the bottleneck). Balanced: A 12 s, B 10 s ⇒ 5/min (+16.7%), same 22 s of total work. Full pooling: 2 × 60/22 = 5.45 ⇒ still capped at 5 by the oven.",
 ]));
 
 c.push(H("5 · Throughput, utilization, implied utilization (L2)"));
-c.push(...F([
-  "Throughput rate = min{ input (demand) rate , process capacity rate }",
-  "Utilization of a resource = throughput rate ÷ capacity of that resource   (always ≤ 100%)",
-  "Implied utilization of a resource = INPUT rate ÷ capacity of that resource   (can be > 100%)",
-  "Cycle time = 1 ÷ throughput rate = time between two finished units",
+c.push(...FE([
+  ["thru"],
+  ["util", "uses THROUGHPUT"],
+  ["implied", "uses INPUT"],
+  ["cycle", "time between two finished units"],
 ]));
 c.push(T([
   ["If you see…", "It means…"],
@@ -204,7 +233,7 @@ c.push(T([
   ["implied utilization = 100%", "input exactly equals capacity ⇒ no build-up"],
 ], [0.42, 0.58]));
 c.push(...X([
-  "**Review p.3–4**: pool (W1+W2) 12/hr, W3 60/7 = 8.57/hr, W4 20/hr; input 10/hr.",
+  "**Review p.3–4**: A (10 min) done by Worker 1 OR Worker 2 (pool 2 × 6 = 12/hr); B 5 + C 2 by Worker 3 (7 min ⇒ 60/7 = 8.57/hr); D 3 min by Worker 4 (20/hr). Input 10/hr.",
   "Throughput = min(10, 8.57) = **8.57/hr**. Utilization = 8.57 ÷ capacity: W3 100%, W4 43%, pool 71%.",
   "Implied utilization = 10 ÷ capacity: W3 117%, W4 50%, pool 83.33%.",
   "**HW1 Q5**: R1 does A 6 + B 2 = 8 min (7.5/hr); R2 does B 2 + C 4 = 6 min (10/hr); R3 does D 4 min (15/hr). Input 2/hr ⇒ throughput 2 ⇒ utilization of R2 = 2/10 = **20%**.",
@@ -238,12 +267,12 @@ c.push(T([
 // ================= PART B: INVENTORY & LITTLE (L3) =================
 c.push(H("8 · Inventory build-up over time (L3)"));
 c.push(B("Inventory **in the process** = units waiting in buffers + units being worked on (pizza: 3 waiting + 1 in prep + 1 in oven = 5). Inventory can never be below 0."));
-c.push(...F([
-  "Discrete (table of periods): queue at end of period = max{ 0 , queue at start + input − capacity }",
-  "Continuous (graph): slope = input rate − capacity rate (while a queue exists)",
-  "Time for a queue to empty = queue size ÷ (capacity − input)",
-  "Discrete average = sum of end-of-period queues ÷ number of periods",
-  "Continuous average = area under the graph ÷ total length of time",
+c.push(...FE([
+  ["qend", "discrete table, each period"],
+  ["slope", "continuous graph"],
+  ["empty"],
+  ["davg"],
+  ["cavg", "include zero stretches"],
 ]));
 c.push(B("While there is a queue, output = capacity. With no queue, output = input. Average throughput = total served ÷ total time."));
 c.push(B("**Stable process**: long-run average input ≤ capacity (otherwise the queue grows forever). Short periods with input > capacity still create temporary queues."));
@@ -258,9 +287,9 @@ c.push(...X([
   "**SA3**: start 65, +4/hr for 5.5 hr ⇒ end 65 + 22 = 87. Area = 65·5.5 + ½·5.5·22 = 357.5 + 60.5 = 418 ⇒ 418 ÷ 5.5 = **76**.",
   "**SA9**: start 50, +5/hr for 4 hr ⇒ area 50·4 + ½·4·20 = 240 ⇒ **60**.",
   "**SA4 (discrete)**: input 15, 32, 39, 10 per hr, capacity 30. End queues: max(0, 15−30) = 0; 0+32−30 = 2; 2+39−30 = 11; max(0, 11+10−30) = 0 ⇒ (0+2+11+0) ÷ 4 = **3.25**.",
-  "**SA12(a) weekly tank**: areas A 37.5 + B 75 + C 50 + D 50 + E 37.5 = 250 ⇒ 250 ÷ 7 days = **35.71 tons**.",
-  "**Airport (discrete)**: capacity 15 per 15 min; total demand 195 < capacity 240 but queues of 1, 4, 11, 13, 11, 7, 4 appear ⇒ 51 ÷ 16 = **3.19**. Enough total capacity does not mean no queue.",
-  "**Same data, two methods**: +20 in week 1, +30 in week 2. Discrete (end of week 20, 50): (20 + 50)/2 = 35. Continuous: (10 + 20 + 15)/2 = 22.5.",
+  "**SA12(a) weekly tank (graph given)**: tons in tank rise 0 (Sun) → 25 (Wed), then 25 → 75 (Fri), stay 75 until Sat, fall to 0 (next Sun). Areas: triangle ½·3·25 = 37.5; rectangle under 25 Wed–Sat 3·25 = 75; triangle ½·2·50 = 50; rectangle Fri–Sat 1·50 = 50; triangle Sat–Sun ½·1·75 = 37.5. Total 250 ⇒ 250 ÷ 7 days = **35.71 tons**.",
+  "**Airport (discrete, L3)**: security can screen 15 passengers per 15-min slot, 6–10 am (16 slots). Arrivals per slot: 7, 10, 8, 12, 9, 16, 14, 19, 22, 17, 13, 11, 12, 8, 10, 7 (total 195 < capacity 240). Queue rule max(0, prev + arrivals − 15) gives 0,0,0,0,0, 1, 0, 4, 11, 13, 11, 7, 4, 0,0,0 ⇒ average 51 ÷ 16 = **3.19**. Enough TOTAL capacity still gives queues when some slots exceed 15.",
+  "**Same data, two methods (L3 summary)**: inventory starts at 0, rises steadily to 20 by end of week 1, then to 50 by end of week 2. Discrete (only end-of-week values 20 and 50): (20 + 50) ÷ 2 = **35**. Continuous (area under the rising line): week 1 triangle ½·1·20 = 10; week 2 rectangle 1·20 = 20 + triangle ½·1·30 = 15 ⇒ 45 ÷ 2 = **22.5**. Use the method the question names.",
 ]));
 c.push(...W([
   "**Review SA8 (hospital), answer key says 10, careful method gives 9.17**: capacity 150/hr. 11–12: input 200 ⇒ +50/hr ⇒ 50 patients at 12. 12–1: input 90 ⇒ slope 90 − 150 = −60/hr ⇒ empty after 50/60 hr = **12:50**, not 1:00.",
@@ -268,9 +297,8 @@ c.push(...W([
 ]));
 
 c.push(H("9 · Little's Law (L3)"));
-c.push(...F([
-  "I = R × T      (average inventory = average throughput rate × average flow time)",
-  "rearranged:  R = I ÷ T     T = I ÷ R",
+c.push(...FE([
+  ["little", "I = avg inventory, R = throughput, T = flow time"],
 ]));
 c.push(B("Works only for a **stable** process, with long-run averages."));
 c.push(B("I, R and T must describe the **same part** of the process: whole process (I = R·T), queue only (I_{q} = R·T_{q}), or service only (I_{s} = R·T_{s}). And use the **same time unit** for R and T."));
@@ -279,7 +307,7 @@ c.push(...X([
   "**HW1 Q2(a)**: R = 12 rocks/hr, T = 10 min = 1/6 hr ⇒ I = 12 × 1/6 = **2 rocks**.",
   "**HW1 Q2(b)**: I = 4 waiting + 1 being crushed = 5 rocks (T covers the whole process, so I must too); T = 20 min ⇒ R = 5 ÷ 20 = **0.25 rocks/min**.",
   "**Review SA7(d)**: R = 3/hr, T = 30 min = 0.5 hr ⇒ I = **1.5 units**. **T/F 13**: I = 100, T = 5 hr ⇒ R = 100/5 = **20/hr** (not 500).",
-  "**Queue waiting time**: average queue 75, R = 87.5/hr ⇒ T_{q} = 75 ÷ 87.5 hr = **51.4 min**.",
+  "**Queue waiting time (same 10 am–6 pm lecture example)**: average queue I_{q} = 75 people, throughput R = 700 served ÷ 8 hr = 87.5/hr ⇒ T_{q} = 75 ÷ 87.5 = 0.857 hr = **51.4 min**.",
 ]));
 c.push(B("**Heathrow**: count people entering and leaving the security area ⇒ number inside over time (I) and exit rate (R) ⇒ average time T = I ÷ R, without tracking each person."));
 c.push(B("**Uber**: L drivers, O of them idle ⇒ busy drivers L − O = Y × (η + T), where Y = trips per minute, η = pickup time, T = ride time ⇒ Y = (L − O) ÷ (η + T). Shorter pickup times ⇒ more trips."));
@@ -311,11 +339,10 @@ c.push(B("**Structures**: one queue one server (ATM) · parallel servers with ON
 c.push(B("**Policies**: who is served (arrival order or priority) · which server (take turns, or least work) · who is matched · when to act (now, or wait and batch). With one server: first come first served (FCFS), shortest processing time (SPT), priority."));
 
 c.push(H("12 · Scheduling jobs: SPT and WSPT (L4)"));
-c.push(...F([
-  "Completion time = waiting time + own processing time:  C_{i} = W_{i} + p_{i}",
-  "Total: ΣC_{i} = ΣW_{i} + Σp_{i}   (Σp_{i} is the same for every order)",
-  "SPT rule: serve in order of SMALLEST p_{i} first ⇒ minimises total completion AND total waiting",
-  "WSPT rule (with priorities): serve in order of SMALLEST p_{i} ÷ w_{i} first ⇒ minimises Σw_{i}C_{i} and Σw_{i}W_{i}",
+c.push(...FE([
+  ["comp", "Σp is the same for every order"],
+  ["spt"],
+  "SPT minimises total completion and total waiting; WSPT minimises the weighted totals Σw_{i}C_{i} and Σw_{i}W_{i}",
 ]));
 c.push(B("Assumes: all jobs ready at time 0, one server, processing times known, no interruptions."));
 c.push(B("**Why shortest first**: the 1st job's time is inside every later completion time (counted n times); the last job's time is counted once."));
@@ -354,11 +381,10 @@ c.push(P("Average queue = arrival rate × average wait (Little's Law). **Average
 
 c.push(H("14 · Probability tools (L4)"));
 c.push(B("**Random variable**: a number for an uncertain outcome. **Discrete**: can be counted (number of arrivals in 10 min: 0, 1, 2, …). **Continuous**: any value in a range (time between arrivals, service time)."));
-c.push(...F([
-  "Expected value (mean):  E[X] = Σ value × probability",
-  "Variance:  Var(X) = E[(X − E[X])²]  = average squared error   (units²)",
-  "Standard deviation:  σ = √Var   (same units as X)",
-  "Coefficient of variation:  CV = σ ÷ E[X]   (no units; how big the spread is compared with the mean)",
+c.push(...FE([
+  ["mean", "the prediction"],
+  ["var", "avg squared error (units²)"],
+  ["sdcv", "σ in original units; CV has no unit"],
 ]));
 c.push(...X([
   "Items per order: 1 (prob 0.25), 3 (0.5), 5 (0.25). E = 1·0.25 + 3·0.5 + 5·0.25 = **3**.",
@@ -384,12 +410,12 @@ c.push(...W(["**Trap (T/F 16)**: mean = std dev = 10 min does NOT prove the time
 // ================= PART D: QUEUES (L4–L5) =================
 c.push(H("15 · Single-server queue (L4)"));
 c.push(B("Picture: arrivals (rate λ) → **buffer / queue** → **one server** (rate μ) → leave. Stable only if λ < μ (i.e. ρ < 1); then throughput = λ."));
-c.push(...F([
-  "Utilization:  ρ = λ ÷ μ",
-  "PK formula (number waiting in queue):  I_{q} ≈ [ρ² ÷ (1 − ρ)] × [(C_{A}² + C_{S}²) ÷ 2]",
-  "Time waiting in queue:  T_{q} = I_{q} ÷ λ     (Little's Law)",
-  "Being served:  T_{s} = 1 ÷ μ ,   I_{s} = λ ÷ μ = ρ",
-  "Whole system (waiting + being served):  I = I_{q} + ρ ,   T = T_{q} + 1/μ = I ÷ λ",
+c.push(...FE([
+  ["rho1", "utilization; must be < 1 (stable)"],
+  ["pk1", "people WAITING (not being served)"],
+  ["tq1"],
+  ["sys1", "whole system = waiting + being served"],
+  ["mm1"],
 ]));
 c.push(B("First bracket = **utilization effect** (from the averages). Second bracket = **variability effect** (from C_{A}, C_{S}). I_{q} does NOT include the person being served."));
 c.push(B("C_{A} = std dev of time between arrivals ÷ mean time between arrivals. C_{S} = std dev of service time ÷ mean service time. Use TIMES (not rates) and the same units."));
@@ -442,10 +468,10 @@ c.push(B("**OM triangle** (3 ways to cope with variability): **Capacity**: add s
 
 c.push(H("17 · Multi-server queue: c servers, ONE shared queue (L5)"));
 c.push(B("One queue, first come first served, c identical servers each with rate μ. Stable only if λ < c·μ. Throughput = λ."));
-c.push(...F([
-  "Utilization:  ρ = λ ÷ (c × μ)   (same for the whole pool and for each server)",
-  "Multi-server PK:  I_{q} ≈ [ρ^{√(2(c+1))} ÷ (1 − ρ)] × [(C_{A}² + C_{S}²) ÷ 2]",
-  "T_{q} = I_{q} ÷ λ ;  busy servers I_{s} = c·ρ = λ/μ ;  T = T_{q} + 1/μ",
+c.push(...FE([
+  ["rhoc", "same for the pool and each server"],
+  ["pkc", "c = 1 gives the single-server formula"],
+  ["tqc", "I_{s} = number of busy servers"],
 ]));
 c.push(T([
   ["Servers c", "1", "2", "3", "4", "5", "6"],
@@ -463,9 +489,9 @@ c.push(...X([
 ]));
 c.push(...X([
   "**Write the PK formula for a name (Review SA12e)**: D/M/2: ρ^{√6}/(1−ρ) × (0 + 1)/2 · G/M/1: ρ²/(1−ρ) × (C_{A}² + 1)/2 · M/M/3: ρ^{√8}/(1−ρ) · M/G/c: ρ^{√(2(c+1))}/(1−ρ) × (1 + C_{S}²)/2.",
-  "**Two independent queues (SA12d)**: drive-through λ8, μ10 ⇒ I_{q} = 64/20 = 16/5, T_{q} = 2/5 hr; dining room λ20, μ30 ⇒ I_{q} = 4/3, T_{q} = 1/15 hr.",
+  "**Two independent queues (SA12d, restaurant)**: drive-through: 8 orders/hr, 6 min each (μ = 10/hr), M/M/1 ⇒ I_{q} = 8² ÷ (10 × 2) = 16/5, T_{q} = (16/5) ÷ 8 = 2/5 hr. Dining room: 20/hr, 2 min each (μ = 30/hr) ⇒ I_{q} = 20² ÷ (30 × 10) = 4/3, T_{q} = 1/15 hr.",
   "Total waiting = 16/5 + 4/3 = **68/15 ≈ 4.53**. Average wait = (8/28)(2/5) + (20/28)(1/15) = **17/105 hr ≈ 0.162 hr** (weight by arrival share).",
-  "**Two queues in a row (SA12g)**: queue 1 G/M/1: λ15, gaps every 4 min with std dev 1 ⇒ C_{A} = 1/4; μ60 ⇒ ρ = 1/4 ⇒ I_{q} = (1/12)(17/32) = 17/384, T_{q} ≈ 0.003 hr.",
+  "**Two queues in a row (SA12g, helpline)**: calls arrive every 4 min on average (λ = 15/hr), std dev 1 min ⇒ C_{A} = 1/4. Queue 1: Operator 1 takes 60 calls/hr, exponential (C_{S} = 1) ⇒ ρ = 15/60 = 1/4 ⇒ I_{q} = [(1/16) ÷ (3/4)] × (1/16 + 1)/2 = 17/384, T_{q} = (17/384) ÷ 15 ≈ 0.003 hr.",
   "Queue 2 G/M/4: μ4 each ⇒ ρ = 15/16; I_{q} = 0.9375^{3.162} ÷ (1/16) × (1/16 + 1)/2 ≈ 6.93, T_{q} ≈ 0.462 hr. Total on hold = 0.003 + 0.462 ≈ **0.465 hr**.",
 ]));
 
