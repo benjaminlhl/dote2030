@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DOTE 2030 Cheatsheet</title>
+<style>
+  @page { size: A4; margin: 7mm; }
+  :root {
+    --ink: #111; --ink2: #444; --rule: #c9c9c4; --accent: #1d5fb4; --warn: #a3330f;
+    --tint: #eef3fb; --wtint: #fbefe9; --bg: #fff;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); }
+  body { font: 8pt/1.3 "Inter", "DejaVu Sans", sans-serif; }
+  .page { columns: 3; column-gap: 3.2mm; column-rule: 0.5px solid var(--rule); }
+  .page + .page { break-before: page; }
+  header { column-span: all; display: flex; justify-content: space-between; align-items: baseline;
+           border-bottom: 1.5px solid var(--ink); margin-bottom: 1.6mm; padding-bottom: 0.6mm; }
+  header h1 { font-size: 10.5pt; margin: 0; letter-spacing: -0.01em; }
+  header span { font-size: 6.6pt; color: var(--ink2); }
+  section { break-inside: avoid-column; margin: 0 0 1.5mm; }
+  h2 { font-size: 8.4pt; margin: 0 0 0.6mm; padding: 0.3mm 1mm; background: var(--ink); color: #fff; border-radius: 1px; }
+  h3 { font-size: 8pt; margin: 1mm 0 0.3mm; color: var(--accent); }
+  p, ul { margin: 0 0 0.6mm; }
+  ul { padding-left: 3mm; }
+  li { margin: 0 0 0.15mm; }
+  .f { background: var(--tint); border-left: 2px solid var(--accent); padding: 0.4mm 1mm; margin: 0.4mm 0 0.7mm;
+       font-weight: 600; }
+  .w { background: var(--wtint); border-left: 2px solid var(--warn); padding: 0.4mm 1mm; margin: 0.4mm 0 0.7mm; }
+  .w b { color: var(--warn); }
+  table { border-collapse: collapse; width: 100%; margin: 0.3mm 0 0.8mm; font-size: 7.4pt; }
+  th, td { border: 0.5px solid var(--rule); padding: 0.25mm 0.7mm; text-align: left; vertical-align: top; }
+  th { background: #f1f1ee; font-weight: 600; }
+  .n { font-variant-numeric: tabular-nums; }
+  .muted { color: var(--ink2); }
+  sup, sub { font-size: 75%; line-height: 0; }
+  .tf td:first-child { font-weight: 700; width: 3.5mm; text-align: center; }
+  .tf .T { color: #1d7a36; } .tf .F { color: var(--warn); }
+  @media screen {
+    body { max-width: 210mm; margin: 0 auto; padding: 8mm; }
+    .page + .page { margin-top: 8mm; border-top: 1px dashed var(--rule); padding-top: 6mm; }
+  }
+  @media screen and (max-width: 700px) { body { padding: 16px; font-size: 9pt; } .page { columns: 1; } }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1: PROCESS FLOW ================= -->
+<div class="page">
+<header><h1>DOTE 2030 Midterm Cheatsheet · Lectures 2–5</h1><span>Page 1 / 2 · Process flow &amp; inventory (L2–L3)</span></header>
+
+<section>
+<h2>1 · Process mapping (L2)</h2>
+<ul>
+<li><b>Flow unit</b>: item flowing through. <b>Activity</b> (□): takes time, uses resources. <b>Buffer</b> (△): waiting. <b>Decision point</b> (◇): routes flow.</li>
+<li>Only <b>resources</b> have capacity &amp; can be bottlenecks, never activities. Count <b>every</b> resource: workers, machines, tools (the handsaw trap: <i>you</i> 2 h + 1 h = 3 h is the bottleneck).</li>
+<li>Map the process as it <i>actually</i> works; validate with the people involved.</li>
+</ul>
+</section>
+
+<section>
+<h2>2 · Flow time</h2>
+<p><b>Theoretical flow time</b> = <i>shortest</i> time for one unit (perfect world, no waiting). Actual flow time can be longer.</p>
+<div class="f">Single path: sum of activity times. Simultaneous activities: <u>longest path</u> START→END.</div>
+<ul>
+<li>A pooled activity (W1 or W2 does A) counts <b>once</b>.</li>
+<li>Burger ∥ fries: 1+5+1+1+1 = 9 min, not 13. HW1 Q1: paths 18, 20, 20, <b>22</b>.</li>
+<li>Pooling or speeding a non-bottleneck task changes flow time, not capacity. A faster bottleneck task changes both.</li>
+</ul>
+</section>
+
+<section>
+<h2>3 · Unit load · capacity · bottleneck</h2>
+<div class="f">Unit load (resource) = Σ times of <u>all</u> activities it does<br>
+Capacity = (# in pool) × 60 ÷ unit load (min) per hr<br>
+Process capacity = min over resources/pools = bottleneck</div>
+<ul>
+<li>Unit load = 1 / capacity. Bottleneck = highest unit load per pool member. Ties are possible.</li>
+<li>An activity needing 2 resources (Crane + Emp 1) adds its time to <b>both</b> unit loads.</li>
+<li><b>Never</b> compute capacity as 1 / flow time (McDonald's: 36 s ≠ 100/hr; real capacity 360/hr).</li>
+</ul>
+<table class="n">
+<tr><th colspan="5">McDonald's: 8, 10, 8, 6, 2, 2 s → 450, <b>360</b>, 450, 600, 1800, 1800 /hr</th></tr>
+<tr><td colspan="5">Flow time 36 s. 2nd cashier: still 360. 2nd toaster: <b>450</b>, new bottlenecks cashier + W2. W3 does 6+2+2 = 10 s → still 360, frees W4, W5.</td></tr>
+</table>
+<h3>Improving capacity</h3>
+<ul>
+<li>(1) <b>Pool</b> the bottleneck (add copies). (2) <b>Reduce its unit load</b>: speed it up or reassign tasks.</li>
+<li>Fixing one bottleneck can create another. Reduce only until it ties the <b>next</b> bottleneck; watch pools (Review SA2: worker 25 → 15 min, = <b>10 min</b>).</li>
+<li>Equipment caps capacity whatever the staffing (pizza oven: 1+10+1 = 12 s → max 5/min). Balancing work: 4.29 → 5/min, same 22 s of total work.</li>
+</ul>
+</section>
+
+<section>
+<h2>4 · Throughput &amp; utilization</h2>
+<div class="f">Throughput = min{input rate, capacity rate}<br>
+Utilization = throughput ÷ resource capacity (≤ 100%)<br>
+Implied util. = input ÷ resource capacity (can be &gt; 100%)<br>
+Cycle time = 1 ÷ throughput</div>
+<ul>
+<li>All utilizations &lt; 100%: <b>demand-limited</b>. Some = 100%: that resource is the bottleneck, and input ≥ capacity.</li>
+<li>Implied util. &gt; 100% → inventory builds. Utilization is <b>never</b> &gt; 100%.</li>
+<li>Throughput = capacity does <i>not</i> imply build-up (input might equal capacity exactly).</li>
+<li>Bottleneck has the highest utilization.</li>
+</ul>
+<h3>Profit decisions</h3>
+<p>Profit/hr = throughput × margin − hourly costs. Only adding capacity at the bottleneck helps; the new bottleneck caps the gain. <span class="muted">Rev. SA1(e): rent 2nd B → cap 4/hr: $40 − $14 = $26 &lt; $30, so don't rent. SA11(c): hire W3 → 8.57/hr: $85.7 − $60 = $25.7 &gt; $20, so hire.</span></p>
+</section>
+
+<section>
+<h2>5 · Worked patterns</h2>
+<table class="n">
+<tr><th>Case</th><th>Unit loads → capacity</th><th>Answer</th></tr>
+<tr><td>In-class ex.</td><td>Pool A 2×6 = 12; W3 5+2+3 = 10 min → 6; W4 5 → 12</td><td>BN W3, 6/hr; flow time 25; util @3/hr 25/50/25%</td></tr>
+<tr><td>HW1 Q4</td><td>Saw 30, E1 40+10 = 50, Crane 10, E2 60</td><td>BN E2 (1/hr); pool E2+E3 → E1 (1.2/hr); target 2/hr: all ≤ 30 min → $300 + $200 = <b>$500</b></td></tr>
+<tr><td>HW1 Q5</td><td>R1 6+2 = 8 → 7.5; R2 2+4 = 6 → 10; R3 4 → 15</td><td>Util R2 @ input 2 = 20%</td></tr>
+<tr><td>Bank SA11</td><td>W1 4+2 = 6 → 10; W2 3+7 = 10 → 6; PC 2 → 30</td><td>6/hr; implied util W1 @12 = 120%</td></tr>
+</table>
+</section>
+
+<section>
+<h2>6 · Inventory build-up (L3)</h2>
+<ul>
+<li>Inventory in process = buffers + activities (pizza 3 + 1 + 1 = 5). Never &lt; 0.</li>
+<li>End-of-interval queue: <b>Q = max{0, Q<sub>prev</sub> + input − capacity}</b>.</li>
+<li>Slope (build-up rate) = input − capacity while a queue exists. Output = capacity while queued, else = input.</li>
+<li>When the queue drains, <b>find when it hits 0</b> = Q ÷ (capacity − input).</li>
+</ul>
+<div class="f">Discrete avg = Σ snapshots ÷ # intervals<br>Continuous avg = area under curve ÷ total time</div>
+<ul>
+<li>Split the area into triangles (½·b·h) and rectangles. A trapezoid = rectangle + triangle.</li>
+<li>Same data, different methods: weeks 20 → 50: discrete (20+50)/2 = 35; continuous (10+20+15)/2 = 22.5.</li>
+<li>Enough <i>total</i> capacity ≠ no queue (airport: 195 ≤ 240 yet queue peaks at 13; avg 51/16 = 3.19).</li>
+<li><b>Stable</b>: long-run input ≤ capacity. Short-run input can exceed it.</li>
+</ul>
+<table class="n">
+<tr><th>Example</th><th>Area</th><th>Avg</th></tr>
+<tr><td>50/hr, 200/hr (12–2), cap 100, 10a–6p</td><td>½·2·200 + ½·4·200 = 600</td><td>600/8 = <b>75</b>; R = 700/8 = 87.5</td></tr>
+<tr><td>HW1 Q3: +20/hr 2 h, flat 2 h, −20/hr 1 h</td><td>40 + 80 + (20+10) = 150</td><td>150/5 = <b>30</b></td></tr>
+<tr><td>Start 65, +4/hr, 5.5 h (end 87)</td><td>357.5 + 60.5 = 418</td><td><b>76</b></td></tr>
+<tr><td>POS: 15, 32, 39, 10 vs cap 30</td><td>queues 0, 2, 11, 0</td><td>13/4 = <b>3.25</b></td></tr>
+</table>
+<div class="w"><b>Review SA8 (hospital):</b> after 12 pm, slope = 90 − 150 = −60/hr, so 50 clears at <b>12:50</b>. Area 25 + 20.83 = 45.83 → avg <b>9.17</b> (review key says 10). Show the 12:50 step.</div>
+</section>
+
+<section>
+<h2>7 · Little's Law (L3)</h2>
+<div class="f">I = R × T  (avg inventory = throughput × avg flow time)</div>
+<ul>
+<li>Requires stability. I, R, T must cover the <b>same</b> part of the process, in the <b>same</b> time units.</li>
+<li>Rocks: R = 12/hr, T = 10 min = 1/6 hr → I = 2. I = 4 + 1 = 5, T = 20 min → R = 0.25/min.</li>
+<li>BBA: 850 × 4 = 3400; 3500/4 = 875; 3600/800 = 4.5 yr. Queue: T<sub>q</sub> = I<sub>q</sub>/R = 75/87.5 h = 51.4 min.</li>
+<li>Heathrow: count in/out → I, R → T = I/R (no need to match individuals). Uber: L − O = Y(η + T).</li>
+</ul>
+</section>
+
+<section>
+<h2>8 · Shouldice (L3 case)</h2>
+<ul>
+<li>Weekly capacity: beds 90 × 7/3 = 210; surgeons 12 × 4 × 5 = 240; <b>ORs 5 × 8 × 5 = 200 (bottleneck)</b>. Daily: ≤ 90 beds, ≤ 48 surgeons, <b>≤ 40 ORs</b>.</li>
+<li>Now: R = 150/wk; I = 150 × 3/7 ≈ 64. Best Mon–Fri schedule: 40, 40, 10, 40, 40 = <b>170</b> (x₁ + (x₂+x₃+x₄) + x₅ ≤ 40 + 90 + 40). 180 needs Saturday surgery, +10 beds, or +1 OR.</li>
+</ul>
+</section>
+</div>
+
+<!-- ================= PAGE 2: QUEUEING ================= -->
+<div class="page">
+<header><h1>DOTE 2030 Midterm Cheatsheet · Lectures 2–5</h1><span>Page 2 / 2 · Scheduling, probability &amp; queues (L4–L5) · T/F traps</span></header>
+
+<section>
+<h2>9 · Scheduling: SPT &amp; WSPT (L4)</h2>
+<div class="f">C<sub>i</sub> = W<sub>i</sub> + p<sub>i</sub>  ⇒  ΣC = ΣW + Σp (Σp fixed)</div>
+<ul>
+<li><b>SPT</b>: ascending p<sub>i</sub> → minimises ΣC and ΣW. Why: the 1st job's time appears in all n completion times.</li>
+<li><b>WSPT</b>: ascending <b>p<sub>i</sub>/w<sub>i</sub></b> → minimises Σw<sub>i</sub>C<sub>i</sub> and Σw<sub>i</sub>W<sub>i</sub>.</li>
+<li>Rank by ratio, but compute C<sub>i</sub> by adding the <b>actual</b> p<sub>i</sub>. Σw<sub>i</sub>W<sub>i</sub> = Σw<sub>i</sub>C<sub>i</sub> − Σw<sub>i</sub>p<sub>i</sub>.</li>
+</ul>
+<table class="n">
+<tr><th>Example</th><th>Order</th><th>Result</th></tr>
+<tr><td>p = 10, 15, 7</td><td>3→1→2</td><td>ΣC 56, ΣW 24 (vs 67/35)</td></tr>
+<tr><td>p = 6, 5, 8, 15</td><td>2→1→3→4</td><td>C 5, 11, 19, 34; ΣC 69; ΣW 35</td></tr>
+<tr><td>p 6, 5, 8, 15; w 4, 1, 2, 1</td><td>1→3→2→4</td><td>ratios 1.5, 5, 4, 15</td></tr>
+<tr><td>10-patient ex.</td><td>2,7,9,5,1,4,8,6,3,10</td><td>ΣwC 1038; ΣwW 748</td></tr>
+</table>
+</section>
+
+<section>
+<h2>10 · Variability</h2>
+<p>Same averages ≠ same queue. ATM (0.5/min, 1 min service): regular 0 wait; clustered arrivals 0.5 min; variable service 0.125 min. Flow time = waiting + service.</p>
+</section>
+
+<section>
+<h2>11 · Probability (L4)</h2>
+<div class="f">E[X] = Σ x<sub>i</sub>·P(x<sub>i</sub>)  ·  Var = E[(X − E[X])²]<br>σ = √Var  ·  CV = σ / E[X] (no units)</div>
+<p class="muted">1, 3, 5 items with prob .25/.5/.25 → E = 3, Var = 2, σ = 1.41, CV = 47.1%.</p>
+<table class="n">
+<tr><th>Model</th><th>Use</th><th>Mean</th><th>SD</th><th>CV</th></tr>
+<tr><td>Poisson(m)</td><td>count in a window</td><td>m</td><td>√m</td><td>1/√m</td></tr>
+<tr><td>Exponential(r)</td><td>duration / gap</td><td>1/r</td><td>1/r</td><td><b>1</b></td></tr>
+<tr><td>Deterministic</td><td>constant</td><td>c</td><td>0</td><td><b>0</b></td></tr>
+</table>
+<ul>
+<li>Arrivals at λ/hr: A ~ Exp(λ), E[A] = 1/λ. In 10 min, N ~ Poisson(λ/6). λ = 12: Poisson(2), CV .707.</li>
+<li>Poisson counts ⇔ exponential gaps. 15/hr → SD of gap = 1/15 h = <b>4 min</b>.</li>
+<li>Mean = SD does <b>not</b> prove the distribution is exponential.</li>
+</ul>
+</section>
+
+<section>
+<h2>12 · Single-server queue (L4)</h2>
+<table class="n">
+<tr><td>λ arrival rate; 1/λ = E[A]</td><td>μ service rate; 1/μ = E[S]</td></tr>
+<tr><td colspan="2"><b>ρ = λ/μ</b>; stable iff ρ &lt; 1; throughput = λ</td></tr>
+</table>
+<div class="f">PK: I<sub>q</sub> ≈ ρ²/(1−ρ) × (C<sub>A</sub>² + C<sub>S</sub>²)/2<br>
+T<sub>q</sub> = I<sub>q</sub>/λ · T<sub>s</sub> = 1/μ · I<sub>s</sub> = ρ<br>
+I = I<sub>q</sub> + I<sub>s</sub> · T = T<sub>q</sub> + T<sub>s</sub> = I/λ</div>
+<ul>
+<li>C<sub>A</sub> = SD(A)/E[A]; C<sub>S</sub> = SD(S)/E[S], using the <b>times</b>, in the <b>same units</b>.</li>
+<li>I<sub>q</sub> excludes the customer in service.</li>
+<li>Alt. form: I<sub>q</sub> ≈ λ²/[μ(μ−λ)] × (λ²σ<sub>A</sub>² + μ²σ<sub>S</sub>²)/2.</li>
+</ul>
+<table class="n">
+<tr><th>Model</th><th>C<sub>A</sub></th><th>C<sub>S</sub></th><th>I<sub>q</sub></th></tr>
+<tr><td>G/G/1</td><td>C<sub>A</sub></td><td>C<sub>S</sub></td><td>ρ²/(1−ρ)·(C<sub>A</sub>²+C<sub>S</sub>²)/2</td></tr>
+<tr><td>M/M/1 (exact)</td><td>1</td><td>1</td><td>ρ²/(1−ρ) = λ²/[μ(μ−λ)]</td></tr>
+<tr><td>M/D/1</td><td>1</td><td>0</td><td>ρ²/(1−ρ)·½ = λ²/[2μ(μ−λ)]</td></tr>
+<tr><td>D/D/1</td><td>0</td><td>0</td><td>0</td></tr>
+</table>
+<p class="muted">Notation: arrivals / service / # servers. G = general, M = exponential (CV 1), D = deterministic (CV 0).</p>
+</section>
+
+<section>
+<h2>13 · Queue worked answers</h2>
+<table class="n">
+<tr><th>Case</th><th>ρ</th><th>I<sub>q</sub></th><th>T<sub>q</sub></th></tr>
+<tr><td>λ4 μ6 M/M/1</td><td>2/3</td><td>4/3</td><td>1/3 h = 20 min</td></tr>
+<tr><td>λ4 μ6 C<sub>A</sub> 1/3, C<sub>S</sub> .3</td><td>2/3</td><td>0.134</td><td>.034 h ≈ 2 min</td></tr>
+<tr><td>λ4 μ6 M/D/1</td><td>2/3</td><td>2/3</td><td>1/6 h = 10 min</td></tr>
+<tr><td>λ10 μ20 M/M/1</td><td>1/2</td><td>1/2</td><td>1/20 h = 3 min</td></tr>
+<tr><td>λ10 μ20 M/D/1</td><td>1/2</td><td>1/4</td><td>1/40 h = 1.5 min</td></tr>
+<tr><td>Drive-thru λ20 μ30</td><td>2/3</td><td>4/3; I = 2</td><td>4 min; T = 6 min (M/D/1: T = 4)</td></tr>
+<tr><td>D/G/1 homework</td><td>5/12</td><td>25/672</td><td>≈ .0037 days</td></tr>
+</table>
+</section>
+
+<section>
+<h2>14 · Utilization vs variability · OM triangle</h2>
+<ul>
+<li>M/M/1 I<sub>q</sub> at ρ = 50/80/90/95%: <b>0.5 / 3.2 / 8.1 / 18.05</b>. 80→90% more than doubles it.</li>
+<li>At ρ = 80%: exponential service 3.2 vs constant service 1.6.</li>
+<li>No variability: max utilization is good. With variability: it's very bad (queues explode as ρ→1).</li>
+<li>λ = 8: 6 min exp → 24 min wait; 5 min exp → 10 min; 6 min constant → 12 min. Target I<sub>q</sub> 1.6: M/M/1 needs μ = 11.48, M/D/1 needs 10.</li>
+<li><b>OM triangle</b>: <b>Capacity</b> (capacity cost) · <b>Inventory</b>/buffer (waiting cost) · <b>Information</b> to cut variability, e.g. scheduling (improvement cost).</li>
+</ul>
+</section>
+
+<section>
+<h2>15 · Multi-server queue (L5)</h2>
+<div class="f">ρ = λ/(cμ), stable iff λ &lt; cμ<br>
+I<sub>q</sub> ≈ ρ<sup>√(2(c+1))</sup>/(1−ρ) × (C<sub>A</sub>² + C<sub>S</sub>²)/2<br>
+I<sub>s</sub> = cρ = λ/μ · T<sub>q</sub> = I<sub>q</sub>/λ</div>
+<table class="n">
+<tr><th>c</th><td>1</td><td>2</td><td>3</td><td>4</td><td>5</td></tr>
+<tr><th>√(2(c+1))</th><td>2</td><td>2.449</td><td>2.828</td><td>3.162</td><td>3.464</td></tr>
+</table>
+<ul>
+<li>Pool util. = each server's util. = λ/(cμ). M/M/c: I<sub>q</sub> ≈ ρ<sup>√(2(c+1))</sup>/(1−ρ).</li>
+<li><b>Pooling wins</b>: one G/G/c queue &lt; c separate G/G/1 queues (c·ρ²/(1−ρ)…).</li>
+<li>Card office λ90, μ20, c5: ρ .9 → I<sub>q</sub> 6.94, T<sub>q</sub> 4.63 min.</li>
+<li>Tellers: separate (5/10) + (15/20) = ½ + 9/4 = 2.75 vs M/M/2 (λ20, μ15) ρ 2/3 → <b>1.11</b>.</li>
+<li>Airport: separate lines 3, 6, 30 min → weighted (28·30 + 20·6 + 10·3)/58 = 17.07 min. Merged M/M/3, ρ 58/90 → I<sub>q</sub> .812, T = .84 + 2 = <b>2.84 min</b>.</li>
+<li><b>Independent queues</b>: add the I<sub>q</sub>; avg T<sub>q</sub> is weighted by λ share (17/105 h). <b>Series</b>: add each T<sub>q</sub> (helpline .003 + .462 = .465 h).</li>
+</ul>
+</section>
+
+<section>
+<h2>16 · Matching (L5, conceptual)</h2>
+<p>Platform decides <b>when</b> to match (now vs wait) and <b>whom</b>. Engagement comes from <b>suspense</b> and <b>surprise</b> → match similar skill. 1000/1400/1010/1390: match at once → gaps 400/380 (short wait); wait for 4 → gaps 10/10 (long wait, risk of quitting). Drawbacks: long queues for top players; win rate stuck near 50%.</p>
+</section>
+
+<section>
+<h2>17 · True/False traps (review)</h2>
+<table class="tf">
+<tr><td class="F">F</td><td>Theoretical flow time = every unit's time</td></tr>
+<tr><td class="T">T</td><td>Single bottleneck; shorten its task → capacity ↑</td></tr>
+<tr><td class="F">F</td><td>Shorten <i>any</i> task → capacity ↑</td></tr>
+<tr><td class="T">T</td><td>Shorten R's task → R's capacity ↑</td></tr>
+<tr><td class="T">T</td><td>Implied util. &gt; 100% → inventory builds</td></tr>
+<tr><td class="F">F</td><td>Throughput = capacity → must build inventory</td></tr>
+<tr><td class="F">F</td><td>Input &gt; capacity → utilization &gt; 100%</td></tr>
+<tr><td class="F">F</td><td>Spare capacity 6–7 pm → queue at 7 pm is shorter</td></tr>
+<tr><td class="F">F</td><td>Activities have capacity rates</td></tr>
+<tr><td class="F">F</td><td>I 100, T 5 h → R 500 (it is 20)</td></tr>
+<tr><td class="F">F</td><td>Utilization ↑ → I<sub>q</sub> ↓</td></tr>
+<tr><td class="T">T</td><td>D/D/1 → I<sub>q</sub> = 0</td></tr>
+<tr><td class="F">F</td><td>Mean = SD → must be exponential</td></tr>
+<tr><td class="F">F</td><td>Arrival variance ↑ → more people <i>in service</i></td></tr>
+<tr><td class="F">F</td><td>Double λ and μ (same SDs) → I<sub>q</sub> ×2 (it is <b>×4</b>)</td></tr>
+</table>
+</section>
+
+<section>
+<h2>18 · Exam checklist</h2>
+<ul>
+<li>Convert everything to one time unit <b>before</b> computing ρ or CV.</li>
+<li>Check stability (ρ &lt; 1) and say which model you're using (M/M/1, M/D/1, G/G/c).</li>
+<li>State the formula, substitute, then give the units. Round to 2 dp.</li>
+<li>Asked for "in system / including service"? Add I<sub>s</sub> or T<sub>s</sub>.</li>
+</ul>
+</section>
+</div>
+
+</body>
+</html>
