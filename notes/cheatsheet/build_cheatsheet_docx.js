@@ -62,7 +62,7 @@ function T(rows, fracs, { header = true } = {}) {
     width: { size: COL_W, type: WidthType.DXA },
     columnWidths: widths,
     rows: rows.map((r, ri) => new TableRow({
-      cantSplit: true,
+      cantSplit: true, tableHeader: header && ri === 0,
       children: r.map((c, ci) => new TableCell({
         width: { size: widths[ci], type: WidthType.DXA },
         margins: { top: 10, bottom: 10, left: 40, right: 40 },
@@ -77,6 +77,17 @@ const gap = () => new Paragraph({ children: [], spacing: { before: 0, after: 16,
 
 
 // ===================== CLEAR, SELF-EXPLANATORY CONTENT (v3) =====================
+
+const { ImageRun } = require("docx");
+const FIGDIR = process.env.FIGDIR;
+function IMG(name, hIn) {
+  const wPx = Math.round(COL_W / 1440 * 96), hPx = Math.round(hIn * 96);
+  return new Paragraph({
+    alignment: AlignmentType.CENTER, keepLines: true, spacing: { before: 10, after: 16 },
+    children: [new ImageRun({ type: "png", data: fs.readFileSync(`${FIGDIR}/${name}.png`), transformation: { width: wPx, height: hPx },
+      altText: { title: name, description: name, name } })],
+  });
+}
 const c = [];
 const title = new Paragraph({
   children: [
@@ -127,6 +138,7 @@ c.push(...F([
   "• all activities in one line: ADD all the activity times",
   "• some activities done at the same time (parallel): take the LONGEST path",
 ]));
+c.push(IMG("fig_paths", 2.5 * 372 / 1500));
 c.push(B("This is the **theoretical** (perfect-world) flow time: no waiting, no breakdowns. A real unit can take **longer** because it may wait in buffers."));
 c.push(B("**Parallel paths, step by step**: (1) write down every route from START to END; (2) add the times on each route; (3) the biggest total is the flow time. (Parallel activities must use different resources, otherwise they cannot really run at the same time.)"));
 c.push(B("**Pooled activity** (Worker 1 OR Worker 2 does Activity A): each unit does A only **once**, so count A's time **once**."));
@@ -236,6 +248,7 @@ c.push(...F([
 c.push(B("While there is a queue, output = capacity. With no queue, output = input. Average throughput = total served ÷ total time."));
 c.push(B("**Stable process**: long-run average input ≤ capacity (otherwise the queue grows forever). Short periods with input > capacity still create temporary queues."));
 c.push(B("**Continuous, step by step**: (1) inventory at each time the rate changes; (2) if the queue shrinks, find the exact time it hits 0; (3) cut the area into triangles (½ × base × height) and rectangles (base × height); (4) divide by the WHOLE time window, including the zero parts."));
+c.push(IMG("fig_inventory", 2.5 * 630 / 1500));
 c.push(...X([
   "**Lecture (capacity 100/hr, 10 am–6 pm)**: input 50 (10–12), 200 (12–2), 50 (2–6).",
   "10–12: no queue. 12–2: slope +100/hr ⇒ 200 at 2 pm. 2–6: slope 50 − 100 = −50/hr ⇒ 0 at 6 pm.",
@@ -415,6 +428,7 @@ c.push(T([
   ["Utilization ρ (M/M/1)", "50%", "80%", "90%", "95%"],
   ["Number waiting I_{q} = ρ²/(1−ρ)", "0.50", "3.20", "8.10", "18.05"],
 ], [0.4, 0.15, 0.15, 0.15, 0.15]));
+c.push(IMG("fig_queues", 2.5 * 660 / 1500));
 c.push(B("The queue **explodes** as ρ → 100% (80% → 90% more than doubles it). With no variability, high utilization is good; with variability, very high utilization is BAD."));
 c.push(B("More variability (bigger C_{A} or C_{S}) ⇒ longer queue at every utilization. At ρ = 80%: exponential service 3.2 waiting vs constant service 1.6."));
 c.push(T([
